@@ -14,7 +14,8 @@ set(SRC
         test_paramparser.cpp
         test_paramlistparser.cpp
         test_nodeparser.cpp
-        test_nodelistparser.cpp)
+        test_nodelistparser.cpp
+        test_datetime.cpp)
 
 add_executable(test_figcone_toml ${SRC})
 target_compile_features(test_figcone_toml PUBLIC cxx_std_17)

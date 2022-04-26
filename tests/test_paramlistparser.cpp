@@ -28,4 +28,14 @@ TEST(TestParamListParser, BasicWithoutMacro)
     EXPECT_EQ(tree.param("testIntList").valueList(), (std::vector<std::string>{"1", "2", "3"}));
 }
 
+TEST(TestParamListParser, MissingParamError)
+{
+    assert_exception<figcone::ConfigError>([] {
+        parseParam(R"( testIntList = [[1, 2], 3] )");
+    }, [](const figcone::ConfigError& error){
+        EXPECT_EQ(std::string{error.what()}, "Array 'testIntList': figcone_toml doesn't support nested arrays");
+    });
+}
+
+
 }

@@ -34,8 +34,11 @@ namespace figcone::toml::detail
                 }
                 else{
                     auto valuesList = std::vector<std::string>{};
-                    for (auto& item : value.as_array())
+                    for (auto& item : value.as_array()) {
+                        if (item.is_array())
+                            throw ConfigError{"Array '" + key + "': figcone_toml doesn't support nested arrays"};
                         valuesList.emplace_back(str(item));
+                    }
 
                     node.asItem().addParamList(key, valuesList);
                 }

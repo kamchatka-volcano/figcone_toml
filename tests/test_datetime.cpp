@@ -8,7 +8,7 @@ namespace test_datetime{
 
 TEST(TestDateTime, LocalDate)
 {
-    const auto res = figcone::detail::convertFromString<figcone::toml::DateTime>("2018-12-23");
+    const auto res = figcone::detail::convertFromString<figcone::toml::DateTimePoint>("2018-12-23");
     ASSERT_TRUE(res.has_value());
     auto tm = std::tm{};
     tm.tm_year = 118;
@@ -21,7 +21,7 @@ TEST(TestDateTime, LocalDate)
 
 TEST(TestDateTime, LocalDateTime)
 {
-    const auto res = figcone::detail::convertFromString<figcone::toml::DateTime>("2018-12-23T12:30:00");
+    const auto res = figcone::detail::convertFromString<figcone::toml::DateTimePoint>("2018-12-23T12:30:00");
     ASSERT_TRUE(res.has_value());
     auto tm = std::tm{};
     tm.tm_year = 118;
@@ -37,7 +37,7 @@ TEST(TestDateTime, LocalDateTime)
 
 TEST(TestDateTime, OffsetDateTime)
 {
-    const auto res = figcone::detail::convertFromString<figcone::toml::DateTime>("2018-12-23T12:30:00+09:30");
+    const auto res = figcone::detail::convertFromString<figcone::toml::DateTimePoint>("2018-12-23T12:30:00+09:30");
     ASSERT_TRUE(res.has_value());
     auto tm = std::tm{};
     tm.tm_year = 118;
@@ -53,7 +53,7 @@ TEST(TestDateTime, OffsetDateTime)
 
 TEST(TestDateTime, LocalTime)
 {
-    const auto res = figcone::detail::convertFromString<figcone::toml::Time>("12:30:00");
+    const auto res = figcone::detail::convertFromString<figcone::toml::TimeDuration>("12:30:00");
     ASSERT_TRUE(res.has_value());
     const auto expectedTime = std::chrono::seconds{45000};
     EXPECT_EQ(res->value, expectedTime);

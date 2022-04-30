@@ -5,10 +5,10 @@
 #include <sstream>
 
 namespace figcone::toml{
-struct Time{
+struct TimeDuration{
     std::chrono::seconds value;
 };
-struct DateTime{
+struct DateTimePoint{
     std::chrono::system_clock::time_point value;
 };
 }
@@ -16,26 +16,26 @@ struct DateTime{
 namespace figcone{
 
 template<>
-struct StringConverter<toml::DateTime>{
-    static std::optional<toml::DateTime> fromString(const std::string& data)
+struct StringConverter<toml::DateTimePoint>{
+    static std::optional<toml::DateTimePoint> fromString(const std::string& data)
     {
         auto dateStr = "date = " + data;
         auto stream = std::stringstream{dateStr};
         const auto tomlData = ::toml::parse(stream);
         const auto date = ::toml::get<std::chrono::system_clock::time_point>(tomlData.at("date"));
-        return toml::DateTime{date};
+        return toml::DateTimePoint{date};
     }
 };
 
 template<>
-struct StringConverter<toml::Time>{
-    static std::optional<toml::Time> fromString(const std::string& data)
+struct StringConverter<toml::TimeDuration>{
+    static std::optional<toml::TimeDuration> fromString(const std::string& data)
     {
         auto timeStr = "time = " + data;
         auto stream = std::stringstream{timeStr};
         const auto tomlData = ::toml::parse(stream);
         const auto time = ::toml::get<std::chrono::seconds>(tomlData.at("time"));
-        return toml::Time{time};
+        return toml::TimeDuration{time};
     }
 };
 

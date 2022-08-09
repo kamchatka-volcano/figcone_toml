@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(figcone_toml VERSION 0.9.0 DESCRIPTION "toml11 parser adapter for figcone library")
+project(figcone_toml VERSION 0.10.0 DESCRIPTION "toml11 parser adapter for figcone library")
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(FIGCONE_TOML_SUBPROJECT OFF)
@@ -8,16 +8,11 @@ else()
     set(FIGCONE_TOML_SUBPROJECT ON)
 endif()
 
-find_package(figcone_tree 0.9.0 QUIET)
+include(external/toml)
+find_package(figcone_tree 0.10.0 QUIET)
 if (NOT figcone_tree_FOUND)
     message("Configuration info: figcone_tree library wasn't found on your system, downloading it from the GitHub repository")
     include (external/figcone_tree)
-endif()
-
-find_package(toml11 3.7.1 QUIET)
-if (NOT toml11_FOUND)
-    message("Configuration info: toml11 library wasn't found on your system, downloading it from the GitHub repository")
-    include(external/toml)
 endif()
 
 
@@ -31,7 +26,17 @@ target_include_directories(
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
-target_link_libraries(figcone_toml INTERFACE figcone::figcone_tree toml11::toml11)
+target_include_directories(
+    figcone_toml
+    INTERFACE
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/figcone_toml/detail/external>
+)
+target_include_directories(
+    figcone_toml
+    INTERFACE
+    $<BUILD_INTERFACE:${toml_SOURCE_DIR}>
+)
+target_link_libraries(figcone_toml INTERFACE figcone::figcone_tree)
 
 option(ENABLE_TESTS "Enable tests" OFF)
 if (ENABLE_TESTS AND NOT FIGCONE_TOML_SUBPROJECT)
@@ -43,6 +48,8 @@ option(INSTALL_FIGCONE_TOML "Install figcone_toml library unconditionally" OFF)
 if (NOT FIGCONE_TOML_SUBPROJECT OR INSTALL_FIGCONE_TOML)
     include(GNUInstallDirs)
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/figcone_toml DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    install(DIRECTORY ${toml_SOURCE_DIR}/toml                    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/figcone_toml/detail/external)
+    install(FILES     ${toml_SOURCE_DIR}/toml.hpp                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/figcone_toml/detail/external)
 
     set(FIGCONE_TOML_PACK_PATH ${CMAKE_INSTALL_LIBDIR}/cmake/figcone_toml)
     install(TARGETS figcone_toml

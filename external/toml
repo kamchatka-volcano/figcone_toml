@@ -1,6 +1,6 @@
 include(FetchContent)
 Set(FETCHCONTENT_QUIET FALSE)
-if (NOT TARGET toml11 AND NOT toml11_FOUND)
+if (NOT toml11_FOUND)
     FetchContent_Declare(
             toml
             GIT_REPOSITORY https://github.com/ToruNiina/toml11.git
@@ -8,5 +8,8 @@ if (NOT TARGET toml11 AND NOT toml11_FOUND)
             GIT_SHALLOW    ON
             GIT_PROGRESS TRUE
     )
-    FetchContent_MakeAvailable(toml)
+    FetchContent_GetProperties(toml)
+    if(NOT toml_POPULATED)
+        FetchContent_Populate(toml)
+    endif()
 endif()

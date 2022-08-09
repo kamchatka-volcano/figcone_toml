@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 project(figcone_toml VERSION 0.10.0 DESCRIPTION "toml11 parser adapter for figcone library")
+include(GNUInstallDirs)
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(FIGCONE_TOML_SUBPROJECT OFF)
@@ -46,7 +47,6 @@ endif()
 
 option(INSTALL_FIGCONE_TOML "Install figcone_toml library unconditionally" OFF)
 if (NOT FIGCONE_TOML_SUBPROJECT OR INSTALL_FIGCONE_TOML)
-    include(GNUInstallDirs)
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/figcone_toml DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
     install(DIRECTORY ${toml_SOURCE_DIR}/toml                    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/figcone_toml/detail/external)
     install(FILES     ${toml_SOURCE_DIR}/toml.hpp                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/figcone_toml/detail/external)

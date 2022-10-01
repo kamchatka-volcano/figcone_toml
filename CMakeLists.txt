@@ -1,80 +1,38 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(figcone_toml VERSION 0.10.1 DESCRIPTION "toml11 parser adapter for figcone library")
+project(figcone_toml VERSION 0.11.0 DESCRIPTION "toml11 parser adapter for figcone library")
 include(GNUInstallDirs)
+include(external/seal_lake)
 
-if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    set(FIGCONE_TOML_SUBPROJECT OFF)
-else()
-    set(FIGCONE_TOML_SUBPROJECT ON)
-endif()
+set(INSTALL_FIGCONE_TREE ON)
 
-include(external/toml)
-find_package(figcone_tree 0.10.1 QUIET)
-if (NOT figcone_tree_FOUND)
-    message("Configuration info: figcone_tree library wasn't found on your system, downloading it from the GitHub repository")
-    include (external/figcone_tree)
-endif()
-
-
-add_library(figcone_toml INTERFACE)
-add_library(figcone::figcone_toml ALIAS figcone_toml)
-
-target_compile_features(figcone_toml INTERFACE cxx_std_17)
-target_include_directories(
-        figcone_toml
-        INTERFACE
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+SealLake_FindOrDownload(
+        figcone_tree 0.11.0
+        GIT_REPOSITORY https://github.com/kamchatka-volcano/figcone_tree.git
+        GIT_TAG        cmake_maintenance
 )
-target_include_directories(
-    figcone_toml
-    INTERFACE
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/figcone_toml/detail/external>
+
+unset(toml11_INSTALL)
+SealLake_FindOrDownload(
+        toml11 3.7.1
+        GIT_REPOSITORY https://github.com/ToruNiina/toml11.git
+        GIT_TAG        v3.7.1
 )
-target_include_directories(
-    figcone_toml
-    INTERFACE
-    $<BUILD_INTERFACE:${toml_SOURCE_DIR}>
+
+SealLake_HeaderOnlyLibrary(
+        NAMESPACE figcone
+        COMPILE_FEATURES cxx_std_17
+        INCLUDES figcone_toml/detail/external
+        BUILD_STAGE_INCLUDES ${toml11_SOURCE_DIR}
+        LIBRARIES figcone::figcone_tree
 )
-target_link_libraries(figcone_toml INTERFACE figcone::figcone_tree)
 
-option(ENABLE_TESTS "Enable tests" OFF)
-if (ENABLE_TESTS AND NOT FIGCONE_TOML_SUBPROJECT)
-    enable_testing()
-    add_subdirectory(tests)
-endif()
+SealLake_OptionalBuildSteps(
+        IF_ENABLED_AND_STANDALONE tests
+)
 
-option(INSTALL_FIGCONE_TOML "Install figcone_toml library unconditionally" OFF)
-if (NOT FIGCONE_TOML_SUBPROJECT OR INSTALL_FIGCONE_TOML)
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/figcone_toml DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-    install(DIRECTORY ${toml_SOURCE_DIR}/toml                    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/figcone_toml/detail/external)
-    install(FILES     ${toml_SOURCE_DIR}/toml.hpp                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/figcone_toml/detail/external)
-
-    set(FIGCONE_TOML_PACK_PATH ${CMAKE_INSTALL_LIBDIR}/cmake/figcone_toml)
-    install(TARGETS figcone_toml
-            EXPORT figcone_toml-targets
-            PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/figcone_toml)
-    install(EXPORT figcone_toml-targets
-            FILE figcone_tomlTargets.cmake
-            NAMESPACE figcone::
-            DESTINATION ${FIGCONE_TOML_PACK_PATH})
-
-    include(CMakePackageConfigHelpers)
-    write_basic_package_version_file(
-            ${CMAKE_CURRENT_BINARY_DIR}/figcone_tomlConfigVersion.cmake
-            COMPATIBILITY SameMajorVersion
-            ARCH_INDEPENDENT
-    )
-
-    configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/figcone_tomlConfig.cmake.in
-            ${CMAKE_CURRENT_BINARY_DIR}/figcone_tomlConfig.cmake
-            INSTALL_DESTINATION ${FIGCONE_TOML_PACK_PATH}
-    )
-
-    install(FILES
-            ${CMAKE_CURRENT_BINARY_DIR}/figcone_tomlConfig.cmake
-            ${CMAKE_CURRENT_BINARY_DIR}/figcone_tomlConfigVersion.cmake
-            DESTINATION ${FIGCONE_TOML_PACK_PATH}
-    )
-endif()
+SealLake_Install(
+        PATH figcone_toml/detail/external
+        DIRECTORIES ${toml11_SOURCE_DIR}/toml
+        FILES ${toml11_SOURCE_DIR}/toml.hpp
+)

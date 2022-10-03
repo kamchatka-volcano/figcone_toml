@@ -1,7 +1,7 @@
 #pragma once
-#include <chrono>
+#include "detail/external/toml.hpp"
 #include <figcone_tree/stringconverter.h>
-#include <toml.hpp>
+#include <chrono>
 #include <sstream>
 
 namespace figcone::toml{

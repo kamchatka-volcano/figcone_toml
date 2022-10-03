@@ -1,8 +1,8 @@
 #pragma once
+#include "detail/external/toml.hpp"
 #include <figcone_tree/tree.h>
 #include <figcone_tree/iparser.h>
 #include <figcone_tree/errors.h>
-#include <toml.hpp>
 #include <vector>
 #include <string>
 #include <sstream>

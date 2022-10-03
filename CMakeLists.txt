@@ -5,34 +5,27 @@ include(GNUInstallDirs)
 include(external/seal_lake)
 
 set(INSTALL_FIGCONE_TREE ON)
-
-SealLake_FindOrDownload(
+SealLake_Import(
         figcone_tree 0.11.0
         GIT_REPOSITORY https://github.com/kamchatka-volcano/figcone_tree.git
         GIT_TAG        cmake_maintenance
 )
 
-unset(toml11_INSTALL)
-SealLake_FindOrDownload(
+SealLake_Download(
         toml11 3.7.1
         GIT_REPOSITORY https://github.com/ToruNiina/toml11.git
         GIT_TAG        v3.7.1
+        DESTINATION include/figcone_toml/detail/external
+        DIRECTORIES ${toml11_SOURCE_DIR}/toml
+        FILES ${toml11_SOURCE_DIR}/toml.hpp
 )
 
 SealLake_HeaderOnlyLibrary(
         NAMESPACE figcone
         COMPILE_FEATURES cxx_std_17
-        INCLUDES figcone_toml/detail/external
-        BUILD_STAGE_INCLUDES ${toml11_SOURCE_DIR}
         LIBRARIES figcone::figcone_tree
+        DEPENDENCIES
+            figcone_tree 0.11.0
 )
 
-SealLake_OptionalBuildSteps(
-        IF_ENABLED_AND_STANDALONE tests
-)
-
-SealLake_Install(
-        PATH figcone_toml/detail/external
-        DIRECTORIES ${toml11_SOURCE_DIR}/toml
-        FILES ${toml11_SOURCE_DIR}/toml.hpp
-)
+SealLake_OptionalBuildSteps(tests)

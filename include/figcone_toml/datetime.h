@@ -1,4 +1,6 @@
-#pragma once
+#ifndef FIGCONE_TOML_DATETIME_H
+#define FIGCONE_TOML_DATETIME_H
+
 #include "detail/external/toml.hpp"
 #include <figcone_tree/stringconverter.h>
 #include <chrono>
@@ -21,8 +23,8 @@ struct StringConverter<toml::DateTimePoint>{
     {
         auto dateStr = "date = " + data;
         auto stream = std::stringstream{dateStr};
-        const auto tomlData = ::toml::parse(stream);
-        const auto date = ::toml::get<std::chrono::system_clock::time_point>(tomlData.at("date"));
+        const auto tomlData = toml::parse(stream);
+        const auto date = toml::get<std::chrono::system_clock::time_point>(tomlData.at("date"));
         return toml::DateTimePoint{date};
     }
 };
@@ -33,11 +35,12 @@ struct StringConverter<toml::TimeDuration>{
     {
         auto timeStr = "time = " + data;
         auto stream = std::stringstream{timeStr};
-        const auto tomlData = ::toml::parse(stream);
-        const auto time = ::toml::get<std::chrono::seconds>(tomlData.at("time"));
+        const auto tomlData = toml::parse(stream);
+        const auto time = toml::get<std::chrono::seconds>(tomlData.at("time"));
         return toml::TimeDuration{time};
     }
 };
 
-
 }
+
+#endif //FIGCONE_TOML_DATETIME_H

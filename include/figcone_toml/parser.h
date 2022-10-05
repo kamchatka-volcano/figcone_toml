@@ -1,4 +1,6 @@
-#pragma once
+#ifndef FIGCONE_TOML_PARSER_H
+#define FIGCONE_TOML_PARSER_H
+
 #include "detail/external/toml.hpp"
 #include <figcone_tree/tree.h>
 #include <figcone_tree/iparser.h>
@@ -9,7 +11,7 @@
 
 namespace figcone::toml::detail
 {
-    inline std::string str(const ::toml::value& val)
+    inline std::string str(const toml::value& val)
     {
         if (val.is_string())
             return val.as_string();
@@ -19,7 +21,7 @@ namespace figcone::toml::detail
         return stream.str();
     }
 
-    inline void parseToml(const ::toml::value& toml, figcone::TreeNode& node)
+    inline void parseToml(const toml::value& toml, figcone::TreeNode& node)
     {
         for (auto& [key, value] : toml.as_table()){
             if (value.is_table()){
@@ -56,9 +58,9 @@ public:
     {
         const auto toml = [&]{
             try {
-                return ::toml::parse(stream);
+                return toml::parse(stream);
             }
-            catch (const ::toml::exception& e) {
+            catch (const toml::exception& e) {
                 throw figcone::ConfigError{e.what(), {e.location().line(), e.location().column()}};
             }
         }();
@@ -70,3 +72,5 @@ public:
 };
 
 }
+
+#endif //FIGCONE_TOML_PARSER_H

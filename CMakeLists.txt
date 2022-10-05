@@ -12,12 +12,16 @@ SealLake_Import(
 )
 
 SealLake_Download(
-        toml11 3.7.1
         GIT_REPOSITORY https://github.com/ToruNiina/toml11.git
         GIT_TAG        v3.7.1
         DESTINATION include/figcone_toml/detail/external
-        DIRECTORIES ${toml11_SOURCE_DIR}/toml
-        FILES ${toml11_SOURCE_DIR}/toml.hpp
+        DIRECTORIES toml
+        FILES toml.hpp
+        TEXT_REPLACEMENTS
+            "toml::" "figcone::toml::"
+            "namespace toml" "namespace figcone::toml"
+            "figcone::toml_" "toml_"
+            "TOML11_" "FIGCONE_TOML11_"
 )
 
 SealLake_HeaderOnlyLibrary(

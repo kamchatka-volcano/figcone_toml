@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <figcone_toml/datetime.h>
+#include <figcone_tree/stringconverter.h>
 #include <ctime>
 
 #include <iostream>

@@ -11,21 +11,17 @@ SealLake_Import(
         GIT_TAG        cmake_maintenance
 )
 
-if(NOT CMAKE_CXX_STANDARD)
-    set(UNDEFINE_CMAKE_CXX_STANDARD TRUE)
-endif()
-SealLake_Import(
-        toml11 3.7.1
+SealLake_Download(
         GIT_REPOSITORY https://github.com/ToruNiina/toml11.git
         GIT_TAG        v3.7.1
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/external
+        FILES toml.hpp
+        DIRECTORIES toml
         TEXT_REPLACEMENTS
             "toml::" "figcone::toml::"
             "namespace toml" "namespace figcone::toml"
             "figcone::toml_" "toml_"
 )
-if (UNDEFINE_CMAKE_CXX_STANDARD)
-    unset(CMAKE_CXX_STANDARD CACHE)
-endif()
 
 SealLake_ObjectLibrary(
         NAMESPACE figcone
@@ -33,7 +29,7 @@ SealLake_ObjectLibrary(
         SOURCES
             src/parser.cpp
             src/datetime.cpp
-        LIBRARIES toml11::toml11
+        INCLUDES ${CMAKE_CURRENT_BINARY_DIR}/external
         INTERFACE_LIBRARIES figcone::figcone_tree
         DEPENDENCIES
             figcone_tree 0.11.0

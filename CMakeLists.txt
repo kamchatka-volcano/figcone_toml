@@ -11,12 +11,11 @@ SealLake_Import(
         GIT_TAG        cmake_maintenance
 )
 
-SealLake_Download(
+SealLake_Bundle(
+        NAME figcone_toml11
+        SKIP_LOAD
         GIT_REPOSITORY https://github.com/ToruNiina/toml11.git
         GIT_TAG        v3.7.1
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/external
-        FILES toml.hpp
-        DIRECTORIES toml
         TEXT_REPLACEMENTS
             "toml::" "figcone::toml::"
             "namespace toml" "namespace figcone::toml"
@@ -29,7 +28,7 @@ SealLake_ObjectLibrary(
         SOURCES
             src/parser.cpp
             src/datetime.cpp
-        INCLUDES ${CMAKE_CURRENT_BINARY_DIR}/external
+        INCLUDES "${SEAL_LAKE_SOURCE_figcone_toml11}"
         INTERFACE_LIBRARIES figcone::figcone_tree
         DEPENDENCIES
             figcone_tree 0.11.0

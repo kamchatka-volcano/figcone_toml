@@ -1,3 +1,5 @@
+[![build & test (clang, gcc, MSVC)](https://github.com/kamchatka-volcano/figcone_toml/actions/workflows/build_and_test.yml/badge.svg?branch=master)](https://github.com/kamchatka-volcano/figcone_toml/actions/workflows/build_and_test.yml)
+
 **figcone_toml** - is a [`toml11`](https://github.com/ToruNiina/toml11) configuration parser adapter for [`figcone`](https://github.com/kamchatka-volcano/figcone) library. 
 
 

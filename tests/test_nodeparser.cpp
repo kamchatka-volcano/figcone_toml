@@ -107,24 +107,29 @@ TEST(TestNodeParser, MultiLevel)
 
 TEST(TestNodeParam, DublicateParamError)
 {
-    assert_exception<figcone::ConfigError>([] {
-        parse(R"(
+    assert_exception<figcone::ConfigError>(
+            []
+            {
+                parse(R"(
         foo = 5
         foo = "test"
         [a]
           testInt = 10
         )");
-    }, [](const figcone::ConfigError& error){
-        EXPECT_EQ(std::string{error.what()}, "[line:3, column:15] [error] figcone::toml::insert_value: value (\"foo\") already exists.\n"
-                                             " --> unknown file\n"
-                                             "   |\n"
-                                             " 2 |         foo = 5\n"
-                                             "   |               ^--- value already exists here\n"
-                                             " ...\n"
-                                             " 3 |         foo = \"test\"\n"
-                                             "   |               ~~~~~~ value defined twice");
-    });
+            },
+            [](const figcone::ConfigError& error)
+            {
+                EXPECT_EQ(
+                        std::string{error.what()},
+                        "[line:3, column:15] [error] figcone::toml::insert_value: value (\"foo\") already exists.\n"
+                        " --> unknown file\n"
+                        "   |\n"
+                        " 2 |         foo = 5\n"
+                        "   |               ^--- value already exists here\n"
+                        " ...\n"
+                        " 3 |         foo = \"test\"\n"
+                        "   |               ~~~~~~ value defined twice");
+            });
 }
 
-
-}
+} //namespace test_nodeparser

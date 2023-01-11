@@ -1,9 +1,9 @@
-#include <figcone_toml/datetime.h>
 #include <toml.hpp>
+#include <figcone_toml/datetime.h>
 #include <chrono>
 #include <sstream>
 
-namespace figcone{
+namespace figcone {
 
 std::optional<toml::DateTimePoint> StringConverter<toml::DateTimePoint>::fromString(const std::string& data)
 {
@@ -23,4 +23,4 @@ std::optional<toml::TimeDuration> StringConverter<toml::TimeDuration>::fromStrin
     return toml::TimeDuration{time};
 }
 
-}
+} //namespace figcone

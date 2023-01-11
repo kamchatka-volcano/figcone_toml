@@ -30,12 +30,15 @@ TEST(TestParamListParser, BasicWithoutMacro)
 
 TEST(TestParamListParser, MissingParamError)
 {
-    assert_exception<figcone::ConfigError>([] {
-        parseParam(R"( testIntList = [[1, 2], 3] )");
-    }, [](const figcone::ConfigError& error){
-        EXPECT_EQ(std::string{error.what()}, "Array 'testIntList': figcone_toml doesn't support nested arrays");
-    });
+    assert_exception<figcone::ConfigError>(
+            []
+            {
+                parseParam(R"( testIntList = [[1, 2], 3] )");
+            },
+            [](const figcone::ConfigError& error)
+            {
+                EXPECT_EQ(std::string{error.what()}, "Array 'testIntList': figcone_toml doesn't support nested arrays");
+            });
 }
 
-
-}
+} //namespace test_paramlistparser

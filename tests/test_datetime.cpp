@@ -1,16 +1,16 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include <gtest/gtest.h>
 #include <figcone_toml/datetime.h>
 #include <figcone_tree/stringconverter.h>
+#include <gtest/gtest.h>
 #include <ctime>
 
 #include <iostream>
 
-namespace test_datetime{
+namespace test_datetime {
 
 TEST(TestDateTime, LocalDate)
 {
-    const auto res = figcone::detail::convertFromString<figcone::toml::DateTimePoint>("2018-12-23");
+    const auto res = figcone::StringConverter<figcone::toml::DateTimePoint>::fromString("2018-12-23");
     ASSERT_TRUE(res.has_value());
     auto tm = std::tm{};
     tm.tm_year = 118;
@@ -24,7 +24,7 @@ TEST(TestDateTime, LocalDate)
 
 TEST(TestDateTime, LocalDateTime)
 {
-    const auto res = figcone::detail::convertFromString<figcone::toml::DateTimePoint>("2018-12-23T12:30:00");
+    const auto res = figcone::StringConverter<figcone::toml::DateTimePoint>::fromString("2018-12-23T12:30:00");
     ASSERT_TRUE(res.has_value());
     auto tm = std::tm{};
     tm.tm_year = 118;
@@ -39,18 +39,19 @@ TEST(TestDateTime, LocalDateTime)
     EXPECT_EQ(res->value, expectedTimePoint);
 }
 
-namespace crossplatform
+namespace crossplatform {
+
+std::time_t timegm(std::tm* _Tm)
 {
-    std::time_t timegm(std::tm* _Tm)
-    {
-        auto t = std::mktime(_Tm);
-        return t + (std::mktime(std::localtime(&t)) - std::mktime(std::gmtime(&t)));
-    }
+    auto t = std::mktime(_Tm);
+    return t + (std::mktime(std::localtime(&t)) - std::mktime(std::gmtime(&t)));
 }
+
+} //namespace crossplatform
 
 TEST(TestDateTime, OffsetDateTime)
 {
-    const auto res = figcone::detail::convertFromString<figcone::toml::DateTimePoint>("2018-12-23T12:30:00+09:30");
+    const auto res = figcone::StringConverter<figcone::toml::DateTimePoint>::fromString("2018-12-23T12:30:00+09:30");
     ASSERT_TRUE(res.has_value());
     auto tm = std::tm{};
     tm.tm_year = 2018 - 1900;
@@ -66,10 +67,10 @@ TEST(TestDateTime, OffsetDateTime)
 
 TEST(TestDateTime, LocalTime)
 {
-    const auto res = figcone::detail::convertFromString<figcone::toml::TimeDuration>("12:30:00");
+    const auto res = figcone::StringConverter<figcone::toml::TimeDuration>::fromString("12:30:00");
     ASSERT_TRUE(res.has_value());
     const auto expectedTime = std::chrono::seconds{45000};
     EXPECT_EQ(res->value, expectedTime);
 }
 
-}
+} //namespace test_datetime

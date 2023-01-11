@@ -5,14 +5,14 @@
 #include <chrono>
 #include <sstream>
 
-namespace figcone::toml{
-struct TimeDuration{
+namespace figcone::toml {
+struct TimeDuration {
     std::chrono::seconds value;
 };
-struct DateTimePoint{
+struct DateTimePoint {
     std::chrono::system_clock::time_point value;
 };
-}
+} //namespace figcone::toml
 
 namespace figcone {
 template<>
@@ -25,6 +25,6 @@ struct StringConverter<toml::TimeDuration> {
     static std::optional<toml::TimeDuration> fromString(const std::string& data);
 };
 
-}
+} //namespace figcone
 
 #endif //FIGCONE_TOML_DATETIME_H

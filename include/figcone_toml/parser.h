@@ -8,7 +8,7 @@
 namespace figcone::toml {
 class Parser : public IParser {
 public:
-    TreeNode parse(std::istream& stream) override;
+    Tree parse(std::istream& stream) override;
 };
 
 } //namespace figcone::toml

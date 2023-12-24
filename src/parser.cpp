@@ -30,9 +30,8 @@ void parseToml(const toml::value& toml, TreeNode& node)
         else if (value.is_array()) {
             if (!value.as_array().empty() && value.as_array().front().is_table()) {
                 auto& newNode = node.asItem().addNodeList(key);
-                ;
                 for (auto& item : value.as_array())
-                    parseToml(item, newNode.asList().addNode());
+                    parseToml(item, newNode.asList().emplaceBack());
             }
             else {
                 auto valuesList = std::vector<std::string>{};
@@ -51,7 +50,7 @@ void parseToml(const toml::value& toml, TreeNode& node)
 }
 } //namespace
 
-TreeNode Parser::parse(std::istream& stream)
+Tree Parser::parse(std::istream& stream)
 {
     const auto toml = [&]
     {
@@ -64,7 +63,7 @@ TreeNode Parser::parse(std::istream& stream)
     }();
 
     auto tree = figcone::makeTreeRoot();
-    parseToml(toml, tree);
+    parseToml(toml, *tree);
     return tree;
 }
 

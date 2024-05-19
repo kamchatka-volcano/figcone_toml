@@ -7,7 +7,7 @@ namespace figcone {
 
 std::optional<toml::DateTimePoint> StringConverter<toml::DateTimePoint>::fromString(const std::string& data)
 {
-    auto dateStr = "date = " + data;
+    const auto dateStr = "date = " + data;
     auto stream = std::stringstream{dateStr};
     const auto tomlData = toml::parse(stream);
     const auto date = toml::get<std::chrono::system_clock::time_point>(tomlData.at("date"));
@@ -16,7 +16,7 @@ std::optional<toml::DateTimePoint> StringConverter<toml::DateTimePoint>::fromStr
 
 std::optional<toml::TimeDuration> StringConverter<toml::TimeDuration>::fromString(const std::string& data)
 {
-    auto timeStr = "time = " + data;
+    const auto timeStr = "time = " + data;
     auto stream = std::stringstream{timeStr};
     const auto tomlData = toml::parse(stream);
     const auto time = toml::get<std::chrono::seconds>(tomlData.at("time"));

@@ -62,9 +62,9 @@ Tree Parser::parse(std::istream& stream)
         }
     }();
 
-    auto tree = figcone::makeTreeRoot();
-    parseToml(toml, *tree);
-    return tree;
+    auto treeRoot = figcone::makeTreeRoot();
+    parseToml(toml, *treeRoot);
+    return Tree{std::move(treeRoot)};
 }
 
 } //namespace figcone::toml

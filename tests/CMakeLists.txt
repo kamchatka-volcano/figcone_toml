@@ -6,9 +6,14 @@ set(SRC
         test_paramlistparser.cpp
         test_nodeparser.cpp
         test_nodelistparser.cpp
-        test_datetime.cpp)
+        test_datetime.cpp
+)
 
-SealLake_GoogleTest(
+if(FIGCONE_TOML_TEST_RELEASE)
+    add_subdirectory(release)
+endif()
+
+SealLake_v040_GoogleTest(
         SOURCES ${SRC}
         COMPILE_FEATURES cxx_std_17
         PROPERTIES CXX_EXTENSIONS OFF

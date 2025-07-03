@@ -121,14 +121,15 @@ TEST(TestNodeParam, DublicateParamError)
             {
                 EXPECT_EQ(
                         std::string{error.what()},
-                        "[line:3, column:15] [error] figcone::toml::insert_value: value (\"foo\") already exists.\n"
+                        "[line:3, column:12] [error] figcone::toml::insert_value: failed to insert a value, value already exists\n"
                         " --> unknown file\n"
                         "   |\n"
-                        " 2 |         foo = 5\n"
-                        "   |               ^--- value already exists here\n"
-                        " ...\n"
                         " 3 |         foo = \"test\"\n"
-                        "   |               ~~~~~~ value defined twice");
+                        "   |         ^^^-- inserting this\n"
+                        "   | ...\n"
+                        "   |\n"
+                        " 2 |         foo = 5\n"
+                        "   |               ^-- but value already exists\n");
             });
 }
 

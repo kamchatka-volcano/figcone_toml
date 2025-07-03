@@ -37,7 +37,7 @@ void parseToml(const toml::value& toml, TreeNode& node)
                 auto valuesList = std::vector<std::string>{};
                 for (auto& item : value.as_array()) {
                     if (item.is_array())
-                        throw figcone::ConfigError{"Array '" + key + "': figcone_toml doesn't support nested arrays"};
+                        throw ConfigError{"Array '" + key + "': figcone_toml doesn't support nested arrays"};
                     valuesList.emplace_back(str(item));
                 }
 
@@ -57,12 +57,34 @@ Tree Parser::parse(std::istream& stream)
         try {
             return toml::parse(stream);
         }
+        catch (const toml::syntax_error& e) {
+            if (!e.errors().empty() && !e.errors().front().locations().empty()) {
+                const auto& location = e.errors().front().locations().front().first;
+                throw ConfigError{
+                        e.what(),
+                        {static_cast<int>(location.last_line_number()),
+                         static_cast<int>(location.last_column_number())}};
+            }
+            throw ConfigError{e.what()};
+        }
+        catch (const toml::type_error& e) {
+            throw ConfigError{
+                    e.what(),
+                    {static_cast<int>(e.location().last_line_number()),
+                     static_cast<int>(e.location().last_column_number())}};
+        }
+        catch (const toml::serialization_error& e) {
+            throw ConfigError{
+                    e.what(),
+                    {static_cast<int>(e.location().last_line_number()),
+                     static_cast<int>(e.location().last_column_number())}};
+        }
         catch (const toml::exception& e) {
-            throw figcone::ConfigError{e.what(), {e.location().line(), e.location().column()}};
+            throw ConfigError{e.what()};
         }
     }();
 
-    auto treeRoot = figcone::makeTreeRoot();
+    auto treeRoot = makeTreeRoot();
     parseToml(toml, *treeRoot);
     return Tree{std::move(treeRoot)};
 }
